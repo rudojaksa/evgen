@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+# Copyleft: R.Jaksa 2018, GNU General Public License version 3
+
+$INPUT = $ARGV[0];
+
+die "not a file \"$INPUT\"" if not -f $INPUT;
+
+$s = `cat $INPUT`;
+
+$CR_="\033[31m"; # color red
+$CG_="\033[32m"; # color green
+$CY_="\033[33m"; # color yellow
+$CB_="\033[34m"; # color blue
+$CM_="\033[35m"; # color magenta
+$CC_="\033[36m"; # color cyan
+$CW_="\033[37m"; # color white
+$CK_="\033[90m"; # color black
+$CP_="\033[91m"; # color pink
+$CL_="\033[92m"; # color lime
+$CS_="\033[93m"; # color sulphur yellow
+$CZ_="\033[94m"; # color azure
+$CO_="\033[95m"; # color orchid
+$CA_="\033[96m"; # color aqua cyan
+$CF_="\033[97m"; # color fluorescent white
+$CD_="\033[0m";  # color default
+
+# remove color escape sequences
+$s =~ s/\033\[36m//g;	# cyan
+$s =~ s/\033\[37m//g;	# white
+$s =~ s/\033\[90m//g;	# black
+$s =~ s/\033\[0m//g;	# default
+
+# titles
+$s =~ s/\n([A-Z])/\n\#\#\# $1/g;
+$s =~ s/\n([A-Za-z0-9-]+(\h+[A-Za-z0-9-]+)?(\h+[A-Za-z0-9-]+)?:)/\n\#\#\#\# $1/g;
+
+# multiple newlines
+$s =~ s/\n\h*\n\h*(\n\h*)+/\n\n/g;
+
+# unindent paragraph
+sub unindent {
+  my $s = $_[0];
+  my $h = $_[1];
+
+  # count the number of indentation spaces
+  my $sp;
+  if($s =~ /\#\#\# $h\n( *)[^ ]/) { $sp = $1; }
+  else { return $s; }
+
+  # unindent
+  my $s2;
+  my $inside = 0; # 0=before 1=inside 2=after
+  foreach my $l (split /\n/,$s) {
+    $inside = 2 if $l =~ /^\#\#\# / and $inside == 1;
+    $l =~ s/^$sp// if $inside == 1;
+    $s2 .= "$l\n";
+    $inside = 1 if $l =~ /^\#\#\# $h$/; }
+
+  return $s2; }
+
+# unindent
+$s = unindent $s,"NAME";
+$s = unindent $s,"DESCRIPTION";
+$s = unindent $s,"VERSION";
+
+# add final newline
+$s .= "\n";
+
+# print output
+print "$s";
+

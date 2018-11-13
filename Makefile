@@ -2,7 +2,7 @@ PATH := $(PATH):UTIL
 SRC  := $(shell find . -type f -name '*.pl' | grep -v OFF/ | xargs grep -l '\#!' | cut -b3-)
 BIN  := $(SRC:%.pl=%)
 
-all: $(BIN)
+all: $(BIN) README.md
 
 %: %.pl *.pl
 	perlpp $< > $@
@@ -13,4 +13,11 @@ install: all
 
 clean:
 	rm -fv $(BIN)
+
+mrproper: clean
+	rm -fv README.md
+
+README.md: evgen
+	$< -h > /tmp/help2md.tmp
+	help2md /tmp/help2md.tmp > $@
 
