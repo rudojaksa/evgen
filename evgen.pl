@@ -36,7 +36,7 @@ OPTIONS
     CC(-i=NUM,NUM)  Interval of event IDs CK((default [1,No_of_events]).)
    CC(-ci=NUM,NUM)  Interval of context values CK((default [0,Context_states-1]).)
 
-random policy:
+aarandom policy:
           -r  Choose the event randomly CK((default).)
          -cr  Choose the context randomly CK((default).)
       -r=NUM  Produce the same random event NUM times.
