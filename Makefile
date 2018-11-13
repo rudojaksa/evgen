@@ -23,7 +23,7 @@ push: clean
 mrproper: clean
 	rm -fv README.md
 
-README.md: evgen
+README.md: evgen UTIL/help2md
 	$< -h > /tmp/help2md.tmp
 	help2md /tmp/help2md.tmp > $@
 
