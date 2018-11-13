@@ -1,12 +1,8 @@
 #!/usr/bin/perl
 # Copyleft: R.Jaksa 2018, GNU General Public License version 3
+# ------------------------------------------------------------------------- SUPPORT
 
-$INPUT = $ARGV[0];
-
-die "not a file \"$INPUT\"" if not -f $INPUT;
-
-$s = `cat $INPUT`;
-
+# colors
 $CR_="\033[31m"; # color red
 $CG_="\033[32m"; # color green
 $CY_="\033[33m"; # color yellow
@@ -24,48 +20,95 @@ $CA_="\033[96m"; # color aqua cyan
 $CF_="\033[97m"; # color fluorescent white
 $CD_="\033[0m";  # color default
 
+# inar(\@a,$s) - check whether the string is in the array
+sub inar {
+  my $a=$_[0]; # array ref
+  my $s=$_[1]; # string
+  foreach(@{$a}) { return 1 if $_ eq $s; }
+  return 0; }
+
+# --------------------------------------------------------------------------- ARGVS
+
+our $INPUT = $ARGV[0];
+
+die "not a file \"$INPUT\"" if not -f $INPUT;
+
+# --------------------------------------------------------------------------- INPUT
+
+$RAW = `cat $INPUT`;
+
+# ------------------------------------------------------------------- PREPROCESSING
+
 # remove color escape sequences
-$s =~ s/\033\[36m//g;	# cyan
-$s =~ s/\033\[37m//g;	# white
-$s =~ s/\033\[90m//g;	# black
-$s =~ s/\033\[0m//g;	# default
+$RAW =~ s/\033\[36m//g;	# cyan
+$RAW =~ s/\033\[37m//g;	# white
+$RAW =~ s/\033\[90m//g;	# black
+$RAW =~ s/\033\[0m//g;	# default
 
 # titles
-$s =~ s/\n([A-Z])/\n\#\#\# $1/g;
-$s =~ s/\n([A-Za-z0-9-]+(\h+[A-Za-z0-9-]+)?(\h+[A-Za-z0-9-]+)?:)/\n\#\#\#\# $1/g;
+$RAW =~ s/\n([A-Z])/\n\#\#\# $1/g;
+$RAW =~ s/\n([A-Za-z0-9-]+(\h+[A-Za-z0-9-]+)?(\h+[A-Za-z0-9-]+)?:)/\n\#\#\#\# $1/g;
 
 # multiple newlines
-$s =~ s/\n\h*\n\h*(\n\h*)+/\n\n/g;
+$RAW =~ s/\n\h*\n\h*(\n\h*)+/\n\n/g;
 
-# unindent paragraph
-sub unindent {
-  my $s = $_[0];
-  my $h = $_[1];
+# ------------------------------------------------------------------------ SECTIONS
 
-  # count the number of indentation spaces
-  my $sp;
-  if($s =~ /\#\#\# $h\n( *)[^ ]/) { $sp = $1; }
-  else { return $s; }
+# sections
+our @REG = ("NAME", "DESCRIPTION", "VERSION"); # regular sections
+our @PRE; # preformated sections (the rest)
 
-  # unindent
-  my $s2;
-  my $inside = 0; # 0=before 1=inside 2=after
-  foreach my $l (split /\n/,$s) {
-    $inside = 2 if $l =~ /^\#\#\# / and $inside == 1;
-    $l =~ s/^$sp// if $inside == 1;
-    $s2 .= "$l\n";
-    $inside = 1 if $l =~ /^\#\#\# $h$/; }
+my $hdr; # current header
+my $ind = 1000; # total minimal indentation level
+foreach my $s (split /\n/,$RAW) {
 
-  return $s2; }
+  # header
+  if($s =~ /^\#\#* (.*)\h*$/) {
+    $hdr = $1;
+    push @PRE,$hdr if not inar \@REG,$hdr; } # store PRE headers names
+  
+  # regular sections line
+  elsif(inar \@REG,$hdr) {}
 
-# unindent
-$s = unindent $s,"NAME";
-$s = unindent $s,"DESCRIPTION";
-$s = unindent $s,"VERSION";
+  # preformated sections line
+  elsif($s =~ /^\h*$/) {} # skip empty lines
+  else {
+    if($s =~ /^( *)/) {
+      my $len = length $1;
+      $ind = $len if $len < $ind; }}}
+
+# --------------------------------------------------------------------- PREFORMATED
+
+my $px = ""; # required prefix to maintain minimal indentatiot to be four
+for(my $i=0; $i<4-$ind; $i++) { $px.=" "; }
+
+my $out; # output string
+my $sp; # indentation space for current regular section
+undef $hdr;
+foreach my $s (split /\n/,$RAW) {
+
+  # header
+  if($s =~ /^\#\#* (.*)\h*$/) {
+    $hdr = $1;
+    $out .= "$s\n";
+    if(inar \@REG,$hdr) {
+      if($RAW =~ /\#\#* $hdr\n( *)[^ ]/) { $sp = $1; }}}
+
+  # regular sections line
+  elsif(inar \@REG,$hdr) {
+    $s =~ s/^$sp//;
+    $out .= "$s\n"; }
+    
+  # regular sections line
+  else {
+    $out .= "$px$s\n"; }}
+
+# -------------------------------------------------------------------------- OUTPUT
 
 # add final newline
-$s .= "\n";
+$out .= "\n";
 
 # print output
-print "$s";
+print "$out";
 
+# ---------------------------------------------------------------------------------
