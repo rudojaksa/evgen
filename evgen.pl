@@ -34,7 +34,7 @@ OPTIONS
       -c=NUM  Dimensionality of the context vector CK((default 0 = no_context).)
      -cn=NUM  Number of context states CK((default 2: 0 and 1).)
     CC(-i=NUM,NUM)  Interval of event IDs CK((default [1,No_of_events]).)
-   CC(-ci=NUM,NUM)  Interval of context values CK((default [0,Context_states-1]).)
+    CC(-ci=NUM,NUM)  Interval of context values CK((default [0,Context_states-1]).)
 
 aarandom policy:
           -r  Choose the event randomly CK((default).)

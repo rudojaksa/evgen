@@ -25,7 +25,7 @@ Events consist from action and context.  Events generation policies are:
       -c=NUM  Dimensionality of the context vector (default 0 = no_context).
      -cn=NUM  Number of context states (default 2: 0 and 1).
     -i=NUM,NUM  Interval of event IDs (default [1,No_of_events]).
-   -ci=NUM,NUM  Interval of context values (default [0,Context_states-1]).
+    -ci=NUM,NUM  Interval of context values (default [0,Context_states-1]).
 
 #### aarandom policy:
           -r  Choose the event randomly (default).
