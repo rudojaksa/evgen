@@ -6,7 +6,7 @@ evgen - event generator
     evgen [OPTIONS] [NUM]
 
 ### DESCRIPTION
-Evgen generates a stream of NUM events.  Infinite loop without NUM specified.
+Evgen generates a stream of NUM events, or infinite loop without NUM specified.
 Events consist from action and context.  Events generation policies are:
 
 1. random - choose any random event,
@@ -25,7 +25,7 @@ Events consist from action and context.  Events generation policies are:
       -c=NUM  Dimensionality of the context vector (default 0 = no_context).
      -cn=NUM  Number of context states (default 2: 0 and 1).
   -i=NUM,NUM  Interval of event IDs (default [1,No_of_events]).
- -ci=NUM,NUM  Interval of context values (default [0,Context_states-1]).
+  -ci=NUM,NUM  Interval of context values (default [0,Context_states-1]).
 
 #### random policy:
           -r  Choose the event randomly (default).
@@ -53,9 +53,6 @@ Events consist from action and context.  Events generation policies are:
           a2  actions two (the 2nd dimension of actions vector)
           c1  context one (the 1st dimension of context vector)
           c2  context two (the 2nd dimension of context vector)
-
-### EXAMPLES
-    evgen 
 
 ### VERSION
 evgen.0.3 (c) R.Jaksa 2018 GPLv3

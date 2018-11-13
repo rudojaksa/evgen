@@ -14,6 +14,12 @@ install: all
 clean:
 	rm -fv $(BIN)
 
+push: clean
+	git add .
+	git commit -m update
+	git status
+	git push -f origin master
+
 mrproper: clean
 	rm -fv README.md
 

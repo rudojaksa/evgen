@@ -15,7 +15,7 @@ USAGE
     evgen [OPTIONS] [NUM]
 
 DESCRIPTION
-    Evgen generates a stream of NUM events.  Infinite loop without NUM specified.
+    Evgen generates a stream of NUM events, or infinite loop without NUM specified.
     Events consist from action and context.  Events generation policies are:
 
     1. random - choose any random event,
@@ -34,7 +34,7 @@ OPTIONS
       -c=NUM  Dimensionality of the context vector CK((default 0 = no_context).)
      -cn=NUM  Number of context states CK((default 2: 0 and 1).)
   CC(-i=NUM,NUM)  Interval of event IDs CK((default [1,No_of_events]).)
- CC(-ci=NUM,NUM)  Interval of context values CK((default [0,Context_states-1]).)
+  CC(-ci=NUM,NUM)  Interval of context values CK((default [0,Context_states-1]).)
 
 random policy:
           -r  Choose the event randomly CK((default).)
@@ -62,10 +62,6 @@ META-INFORMATION
           CC(a2)  actions two CK((the 2nd dimension of actions vector))
           CC(c1)  context one CK((the 1st dimension of context vector))
           CC(c2)  context two CK((the 2nd dimension of context vector))
-
-EXAMPLES
-    evgen 
-
 
 EOF
 
