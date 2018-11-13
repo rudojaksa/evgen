@@ -104,36 +104,27 @@ our $MSEC;
 foreach(@ARGV) { if($_ =~ /^-t=([0-9]+)$/) { $MSEC=$1; $_=""; last; }}
 
 # events
-
 our $EVENTS;
 foreach(@ARGV) { if($_ =~ /^-e=([0-9]+)$/) { $EVENTS=$1; $_=""; last; }}
-
 our ($EMIN,$EMAX);
 foreach(@ARGV) { if($_ =~ /^-i=([0-9]+),([0-9]+)$/) { $EMIN=$1; $EMAX=$2; $_=""; last; }}
-
 our $ERAND;
 foreach(@ARGV) { if($_ eq "-r") { $ERAND=1; $_=""; last; }}
 foreach(@ARGV) { if($_ =~ /^-r=([0-9]+)$/) { $ERAND=$1; $_=""; last; }}
-
 our $ESTEP;
 foreach(@ARGV) { if($_ eq "-s") { $ESTEP=100; $_=""; last; }}
 foreach(@ARGV) { if($_ =~ /^-s=([0-9]+)$/) { $ESTEP=$1; $_=""; last; }}
 
 # context
-
 our $CONTVEC;
 foreach(@ARGV) { if($_ =~ /^-c=([0-9]+)$/) { $CONTVEC=$1; $_=""; last; }}
-
 our $CONTEXTS;
 foreach(@ARGV) { if($_ =~ /^-cn=([0-9]+)$/) { $CONTEXTS=$1; $_=""; last; }}
-
 our ($CMIN,$CMAX);
 foreach(@ARGV) { if($_ =~ /^-ci=([0-9]+),([0-9]+)$/) { $CMIN=$1; $CMAX=$2; $_=""; last; }}
-
 our $CRAND;
 foreach(@ARGV) { if($_ eq "-cr") { $CRAND=1; $_=""; last; }}
 foreach(@ARGV) { if($_ =~ /^-cr=([0-9]+)$/) { $CRAND=$1; $_=""; last; }}
-
 our $CSTEP;
 foreach(@ARGV) { if($_ eq "-cs") { $CSTEP=100; $_=""; last; }}
 foreach(@ARGV) { if($_ =~ /^-cs=([0-9]+)$/) { $CSTEP=$1; $_=""; last; }}
@@ -143,7 +134,6 @@ our $FROMFILE;
 foreach(@ARGV) { if($_ =~ /^-f=([^ ]+)$/) { $FROMFILE=$1; $_=""; last; }}
 
 # stop
-
 our $STOP;
 foreach(@ARGV) { if($_ =~ /^([0-9]+)$/) { $STOP=$1; $_=""; last; }}
 
