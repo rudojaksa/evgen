@@ -26,7 +26,7 @@ OPTIONS
           -h  This help.
           -v  Verbose execution using CD(STDERR).
 
-     -t=MSEC  Interval between events in milliseconds CK((default none).)
+     -t=MSEC  Interval between events in milliseconds CK((default none, 100 wo NUM).)
          -nt  No timestamps.
          -nm  No meta-information header.
 
