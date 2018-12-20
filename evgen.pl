@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 # Copyleft: R.Jaksa 2018, GNU General Public License version 3
-# include "CONFIG.pl"
 use v5.10; # for state
-use Time::HiRes qw(usleep time);
+use Time::HiRes qw(usleep time stat);
 use IO::Handle qw( ); STDOUT->autoflush(1);
+# include "CONFIG.pl"
+
 # ------------------------------------------------------------------------------- HELP
 
 $HELP=<<EOF;
@@ -52,6 +53,7 @@ from-file policy:
      -f=FILE  File to read the event ID from.  After any close operation
               the file will be inspected.  The last number from the last
               line will be used as the requested event ID.
+    -fm=FILE  The same, but after any file modification. 
 
 META-INFORMATION
     Comment on the first line in output is used to indicate columns names:
@@ -131,7 +133,9 @@ foreach(@ARGV) { if($_ =~ /^-cs=([0-9]+)$/) { $CSTEP=$1; $_=""; last; }}
 
 # from-file
 our $FROMFILE;
+our $FMODIFY;
 foreach(@ARGV) { if($_ =~ /^-f=([^ ]+)$/) { $FROMFILE=$1; $_=""; last; }}
+foreach(@ARGV) { if($_ =~ /^-fm=([^ ]+)$/) { $FROMFILE=$1; $FMODIFY=1; $_=""; last; }}
 
 # stop
 our $STOP;
@@ -285,8 +289,13 @@ if(not $NOMETA) {
   for(my $j=1; $j<=$CONTVEC; $j++) { $s.=" c$j"; }
   print "# ${d}a1$s\n"; }
 
+# inotifywait
+our $IEVENT = "close_write";
+$IEVENT = "modify" if $FMODIFY;
+
 # main loop
 my $i=0;
+my $t0=getmtime $FROMFILE; # time of output
 while(1) {
   $i++;
   last if $FINITE and $i>$STOP;
@@ -295,20 +304,27 @@ while(1) {
   my $t; # timestamp
   my @c; # context vector
 
-  # from-file
+  # from-file: detect + read
   if(defined $FROMFILE) {
     if(not -f $FROMFILE) { system "touch $FROMFILE"; }
     else {
-      exit 1 if system("inotifywait -q -q -e close_write $FROMFILE") != 0; # end on ctrl-c
-      my $s = `tail -n 1 $FROMFILE`;					   # just last line
-      my $n; $n = $1 if $s =~ /([0-9\.-]+)\h*$/;			   # last number
-      $e = $n if defined $n; }}						   # only if found, otherwise random
+      my $t2 = getmtime $FROMFILE;
+      if($t2 < $t0) {
+	$ret = system("inotifywait -q -q -e $IEVENT $FROMFILE");
+	exit 1 if $ret == 1; } # end on ctrl-c
+
+      my $s = `tail -n 1 $FROMFILE`;			# just last line
+      my $n; $n = $1 if $s =~ /([0-9\.-]+)\h*$/;	# last number
+      verb2 "action read","$n";
+      $e = $n if defined $n; }}			# only if found, otherwise random
 
   $e = event($i,\$es,\$er) if not defined $e;
   $t = tstamp." " if not $NOTS;
   @c = context($i,\@cs,\@cr);
   my $c; $c.=" $_" foreach @c;
 
+  # $t0 = time;
+  $t0 = getmtime $FROMFILE;
   print "$t$e$c\n";
   usleep $MSEC*1000 if defined $MSEC; }
 

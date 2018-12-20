@@ -1,4 +1,3 @@
-
 # --------------------------------------------------------------------------------------------- FUNCS
 
 # inar(\@a,$s) - check whether the string is in the array
@@ -41,6 +40,15 @@ sub firstline {
   $s = <FILE>;
   close(FILE);
   return $s; }
+
+# return mtime of file (the last modification time)
+sub getmtime {
+  my $file=$_[0];
+  my $t=0;
+  if(-e $file) {
+    my @st=stat($file);
+    $t=$st[9]; }
+  return $t; }
 
 # ---------------------------------------------------------------------------------------------------
 

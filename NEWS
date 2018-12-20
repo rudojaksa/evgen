@@ -1,3 +1,4 @@
+0.4 - modify vs close of file trigger (-fm switch)
 0.3 - added from-file evgen policy
 0.2 - added context
       added timestamps

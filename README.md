@@ -42,6 +42,7 @@ Events consist from action and context.  Events generation policies are:
         -f=FILE  File to read the event ID from.  After any close operation
                  the file will be inspected.  The last number from the last
                  line will be used as the requested event ID.
+       -fm=FILE  The same, but after any file modification. 
 
 ### META-INFORMATION
 Comment on the first line in output is used to indicate columns names:
